@@ -257,8 +257,14 @@ def storedata(filename, jobs):
 
 	for row in range(2, len(jobs)+2):
 		for col in range(1, len(indexes)+1):
-			_ = sheet.cell(column=col, row=row, value = "{}".format(jobs[row-2][indexes[col-1]]))
-	
+			write_value = jobs[row-2][indexes[col-1]]
+			#修复openpyxl.utils.exceptions.IllegalCharacterError
+			if isinstance(write_value,str):
+				write_value.encode('unicode_escape').decode('UTF-8')
+			try:
+				_ = sheet.cell(column=col, row=row, value = "{}".format(write_value))
+			except:
+				continue
 	wb.save(filename)
 
 
